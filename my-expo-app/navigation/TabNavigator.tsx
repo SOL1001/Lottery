@@ -66,22 +66,17 @@ const TabNavigator: React.FC = () => {
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
           paddingBottom: 5,
-        //   height: 60,
+          //   height: 60,
         },
         tabBarLabelStyle: {
           fontSize: 12,
           marginBottom: 5,
         },
-      })}
-    >
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen} 
-        options={{ headerShown: false }} 
-      />
+      })}>
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Wallet" component={BookScreen} options={{ headerShown: false }} />
       {/* <Tab.Screen name="Book" component={BookScreen} /> */}
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 };

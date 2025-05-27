@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeIcon from "@mui/icons-material/Home";
-import ApartmentIcon from "@mui/icons-material/Apartment";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PeopleIcon from "@mui/icons-material/People";
 import CollectionsIcon from "@mui/icons-material/Collections";
@@ -12,6 +12,8 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FocusTrap from "focus-trap-react";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 interface NavItem {
   path: string;
@@ -25,31 +27,30 @@ const Sidebar: React.FC<{
   onLogout: () => void;
 }> = ({ isOpen, toggleSidebar, onLogout }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [activeHover, setActiveHover] = useState<string | null>(null);
 
   const navItems: NavItem[] = [
-    { path: "/dashboard", label: "Dashboard", icon: <DashboardIcon /> },
-    { path: "/PropertyDetails", label: "Properties", icon: <HomeIcon /> },
-    { path: "/agent", label: "Agent List", icon: <ApartmentIcon /> },
-    { path: "/list", label: "List", icon: <CollectionsIcon /> },
-    { path: "/Customer", label: "Clients", icon: <PeopleIcon /> },
-    { path: "/support", label: "Support", icon: <SupportAgentIcon /> },
+    { path: "/dashboard", label: "Draw Management", icon: <EmojiEventsIcon /> },
+    // { path: "/draws", label: "Draw Management", icon: <EmojiEventsIcon /> },
+    { path: "/list", label: "Add Ticket Sales", icon: <ReceiptIcon /> },
+    { path: "/winners", label: "Winners", icon: <MonetizationOnIcon /> },
+    { path: "/players", label: "Players", icon: <PeopleIcon /> },
+    // { path: "/reports", label: "Reports", icon: <BarChartIcon /> },
+    // { path: "/support", label: "Support", icon: <SupportAgentIcon /> },
   ];
 
-  // Prevent collapsing on mobile
   const handleCollapseToggle = () => {
     if (window.innerWidth >= 768) {
       setCollapsed(!collapsed);
     }
   };
 
-  // Close sidebar on mobile after NavLink click
   const handleNavLinkClick = () => {
     if (window.innerWidth < 768) {
       toggleSidebar();
     }
   };
 
-  // Swipe-to-close logic
   useEffect(() => {
     if (!isOpen) return;
 
@@ -92,7 +93,7 @@ const Sidebar: React.FC<{
       {!isOpen && (
         <button
           onClick={toggleSidebar}
-          className="md:hidden fixed z-20 bottom-4 left-4 p-4 bg-[#00A16A] text-white rounded-full shadow-xl hover:bg-[#008F56] transition-all transform hover:scale-105"
+          className="md:hidden fixed z-20 bottom-4 left-4 p-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all transform hover:scale-105"
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
         >
           <MenuIcon className="w-6 h-6" />
@@ -105,8 +106,8 @@ const Sidebar: React.FC<{
           aria-expanded={isOpen}
           className={`fixed z-30 inset-y-0 left-0 ${
             collapsed ? "w-20" : "w-full md:w-64"
-          } bg-[#00A16A] text-white transition-transform duration-300 ease-in-out transform ${
-            isOpen ? "translate-x-0 shadow-xl" : "-translate-x-full"
+          } bg-gradient-to-b from-purple-800 to-indigo-900 text-white transition-all duration-300 ease-in-out transform ${
+            isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
           } md:relative md:translate-x-0 h-screen`}
         >
           <div className="flex flex-col h-full">
@@ -115,17 +116,17 @@ const Sidebar: React.FC<{
               {!collapsed && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-[#00A16A] font-bold text-xl">RE</span>
+                    <span className="text-purple-600 font-bold text-xl">L</span>
                   </div>
                   <div className="flex flex-col">
-                    <h1 className="text-lg font-bold">ELITE HOMES</h1>
-                    <p className="text-xs opacity-80">Premium Real Estate</p>
+                    <h1 className="text-lg font-bold">LOTTO PRO</h1>
+                    <p className="text-xs opacity-80">Admin Console</p>
                   </div>
                 </div>
               )}
               {collapsed && (
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-[#00A16A] font-bold text-xl">RE</span>
+                  <span className="text-purple-600 font-bold text-xl">L</span>
                 </div>
               )}
               <div className="flex items-center gap-2">
@@ -149,17 +150,19 @@ const Sidebar: React.FC<{
             </div>
 
             {/* Navigation */}
-            <nav role="navigation" className="flex-1 overflow-y-auto py-2">
-              <ul className="space-y-1 px-2">
+            <nav role="navigation" className="flex-1 overflow-y-auto py-4">
+              <ul className="space-y-2 px-2">
                 {navItems.map((item) => (
                   <li key={item.path}>
                     <NavLink
                       to={item.path}
-                      onClick={handleNavLinkClick} // Added onClick handler
+                      onClick={handleNavLinkClick}
+                      onMouseEnter={() => setActiveHover(item.path)}
+                      onMouseLeave={() => setActiveHover(null)}
                       className={({ isActive }) =>
-                        `flex items-center p-4 md:p-3 ${
+                        `flex items-center p-3 ${
                           collapsed ? "justify-center" : ""
-                        } rounded-lg text-sm font-medium transition-all ${
+                        } rounded-lg text-sm font-medium transition-all relative overflow-hidden group ${
                           isActive
                             ? "bg-white/20 text-white shadow-md"
                             : "text-white/90 hover:bg-white/10 hover:text-white"
@@ -168,10 +171,24 @@ const Sidebar: React.FC<{
                       title={collapsed ? item.label : ""}
                       aria-label={`Navigate to ${item.label}`}
                     >
-                      <span className={collapsed ? "" : "mr-3"}>
+                      <span
+                        className={`transition-transform ${
+                          collapsed ? "" : "mr-3"
+                        } ${
+                          (activeHover === item.path || collapsed) &&
+                          "transform group-hover:scale-110"
+                        }`}
+                      >
                         {item.icon}
                       </span>
-                      {!collapsed && <span>{item.label}</span>}
+                      {!collapsed && (
+                        <span className="flex-1">{item.label}</span>
+                      )}
+                      {!collapsed && (
+                        <span className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ChevronRightIcon fontSize="small" />
+                        </span>
+                      )}
                     </NavLink>
                   </li>
                 ))}
@@ -182,18 +199,27 @@ const Sidebar: React.FC<{
             <div className="p-4 border-t border-white/20 mt-auto">
               <button
                 onClick={onLogout}
+                onMouseEnter={() => setActiveHover("logout")}
+                onMouseLeave={() => setActiveHover(null)}
                 className={`w-full flex items-center ${
                   collapsed ? "justify-center" : "justify-between"
-                } p-3 rounded-lg text-white/90 hover:bg-white/10 transition-colors`}
+                } p-3 rounded-lg text-white/90 hover:bg-white/10 transition-colors group`}
                 title={collapsed ? "Log Out" : ""}
                 aria-label="Log out"
               >
-                <span>{!collapsed && "Log Out"}</span>
-                <LogoutIcon className={collapsed ? "" : "text-lg"} />
+                {!collapsed && <span>Log Out</span>}
+                <LogoutIcon
+                  className={`${
+                    collapsed ? "" : "text-lg"
+                  } transition-transform ${
+                    activeHover === "logout" &&
+                    "transform group-hover:scale-110"
+                  }`}
+                />
               </button>
               {!collapsed && window.innerWidth >= 768 && (
                 <p className="text-xs text-white/60 mt-2 text-center">
-                  © {new Date().getFullYear()} Elite Homes
+                  © {new Date().getFullYear()} Lottery Pro Admin
                 </p>
               )}
             </div>

@@ -1,299 +1,224 @@
-import {
-  FiHome,
-  FiTrendingUp,
-  FiClock,
-  FiDollarSign,
-  FiBell,
-  FiSearch,
-  FiPlus,
-  FiFileText,
-  FiMail,
-  FiCalendar,
-} from "react-icons/fi";
-import Header from "../components/Header";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FaTicketAlt, FaRegClock, FaFire, FaCrown } from "react-icons/fa";
+import { GiMoneyStack } from "react-icons/gi";
 
-const RealEstateDashboard = () => {
-  // Sample data
-  const stats = [
-    {
-      title: "Total Properties",
-      value: "1,248",
-      icon: <FiHome className="text-2xl" />,
-      change: "+12%",
-    },
-    {
-      title: "Active Listings",
-      value: "342",
-      icon: <FiTrendingUp className="text-2xl" />,
-      change: "+5%",
-    },
-    {
-      title: "Pending Deals",
-      value: "28",
-      icon: <FiClock className="text-2xl" />,
-      change: "-2%",
-    },
-    {
-      title: "Revenue This Month",
-      value: "$84,500",
-      icon: <FiDollarSign className="text-2xl" />,
-      change: "+18%",
-    },
-  ];
+interface Post {
+  _id: string;
+  name: string;
+  value: string;
+  ticketsLeft: number;
+  ticketPrice: number;
+  image: string | null;
+  endDate: string;
+  category: string;
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
-  const recentTransactions = [
-    {
-      id: 1,
-      property: "Luxury Villa",
-      client: "John Smith",
-      date: "2023-06-15",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      property: "Downtown Apartment",
-      client: "Sarah Johnson",
-      date: "2023-06-14",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      property: "Suburban House",
-      client: "Michael Brown",
-      date: "2023-06-12",
-      status: "Completed",
-    },
-    {
-      id: 4,
-      property: "Beachfront Property",
-      client: "Emily Davis",
-      date: "2023-06-10",
-      status: "Cancelled",
-    },
-  ];
+export default function PostsPage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const newLeads = [
-    {
-      id: 1,
-      name: "Robert Wilson",
-      email: "robert@example.com",
-      phone: "(555) 123-4567",
-      interest: "Commercial",
-    },
-    {
-      id: 2,
-      name: "Jennifer Lee",
-      email: "jennifer@example.com",
-      phone: "(555) 987-6543",
-      interest: "Residential",
-    },
-  ];
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/posts");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setPosts(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const calculateProgress = (ticketsLeft: number, value: string) => {
+    const totalTickets = Math.floor(parseInt(value.replace(/,/g, "")) / 2); // Simplified calculation
+    return ((totalTickets - ticketsLeft) / totalTickets) * 100;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-purple-900 to-indigo-800">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-400 mb-4"></div>
+          <p className="text-white font-medium">Loading Lottery Draws...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-purple-900 to-indigo-800">
+        <div
+          className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 max-w-md"
+          role="alert"
+        >
+          <div className="flex">
+            <div className="py-1">
+              <svg
+                className="fill-current h-6 w-6 text-red-500 mr-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 5h2v6H9V5zm0 8h2v2H9v-2z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold">Error loading draws</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Main Content */}
-
-      <div className="flex-1 overflow-auto ">
-        {/* Header */}
-        <div className="sticky top-0 z-10">
-          <Header title={"Dashboard"} />
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 sm:text-5xl">
+            Current Lottery Draws
+          </h1>
+          <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+            Your chance to win amazing prizes
+          </p>
         </div>
-        {/* <header className="bg-white shadow-sm p-4 flex items-center justify-between">
-          <div className="relative w-64">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A16A] focus:border-transparent"
-            />
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <FiBell className="text-2xl text-gray-600" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                3
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-[#00A16A] rounded-full flex items-center justify-center text-white">
-                AD
-              </div>
-              <span className="text-gray-700">Admin</span>
-            </div>
-          </div>
-        </header> */}
 
-        {/* Dashboard Content */}
-        <main className="p-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-[#00A16A]"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-gray-500 text-sm">{stat.title}</p>
-                    <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
-                    <p
-                      className={`text-sm mt-2 ${
-                        stat.change.startsWith("+")
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {stat.change} from last month
-                    </p>
-                  </div>
-                  <div className="p-3 rounded-full bg-[#00A16A]/10 text-[#00A16A]">
-                    {stat.icon}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <div
+              key={post._id}
+              className={`bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                post.featured ? "ring-2 ring-yellow-400" : ""
+              }`}
+            >
+              {post.featured && (
+                <div className="absolute top-2 left-2 bg-yellow-400 text-purple-900 px-2 py-1 rounded-md text-xs font-bold flex items-center">
+                  <FaCrown className="mr-1" /> FEATURED
+                </div>
+              )}
+
+              {post.image ? (
+                <div className="h-56 overflow-hidden relative">
+                  <img
+                    src={
+                      post.image.startsWith("http")
+                        ? post.image
+                        : `http://localhost:5000${post.image}`
+                    }
+                    alt={post.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
+                    }}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <h3 className="text-xl font-bold text-white">
+                      {post.name}
+                    </h3>
+                    <p className="text-sm text-white/80">{post.category}</p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ) : (
+                <div className="h-56 bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center text-white">
+                  <span className="text-xl font-medium">
+                    No Image Available
+                  </span>
+                </div>
+              )}
 
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Line Chart Placeholder */}
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">
-                Monthly Property Sales
-              </h3>
-              <div className="h-64 bg-gray-100 rounded flex items-center justify-center text-gray-400">
-                Line Chart Visualization
-              </div>
-            </div>
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center text-yellow-600">
+                    <GiMoneyStack className="mr-2" />
+                    <span className="font-bold">${post.value}</span>
+                  </div>
+                  <div className="flex items-center text-gray-500">
+                    <FaRegClock className="mr-2" />
+                    <span className="text-sm">{formatDate(post.endDate)}</span>
+                  </div>
+                </div>
 
-            {/* Pie Chart Placeholder */}
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">
-                Property Type Distribution
-              </h3>
-              <div className="h-64 bg-gray-100 rounded flex items-center justify-center text-gray-400">
-                Pie Chart Visualization
-              </div>
-            </div>
-          </div>
+                <div className="mb-4">
+                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                    <span>Tickets sold</span>
+                    <span>
+                      {Math.floor(
+                        parseInt(post.value.replace(/,/g, "")) / 2 -
+                          post.ticketsLeft
+                      )}{" "}
+                      / {Math.floor(parseInt(post.value.replace(/,/g, "")) / 2)}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-indigo-600 h-2.5 rounded-full"
+                      style={{
+                        width: `${calculateProgress(
+                          post.ticketsLeft,
+                          post.value
+                        )}%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
 
-          {/* Recent Activity Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Recent Transactions */}
-            <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Recent Transactions</h3>
-                <button className="text-sm text-[#00A16A] hover:underline">
-                  View All
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-purple-50 p-3 rounded-lg text-center">
+                    <div className="text-purple-600 flex justify-center mb-1">
+                      <FaTicketAlt />
+                    </div>
+                    <div className="text-sm font-medium text-gray-700">
+                      {post.ticketsLeft.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-gray-500">Tickets Left</div>
+                  </div>
+                  <div className="bg-indigo-50 p-3 rounded-lg text-center">
+                    <div className="text-indigo-600 flex justify-center mb-1">
+                      <FaFire />
+                    </div>
+                    <div className="text-sm font-medium text-gray-700">
+                      ${post.ticketPrice.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-gray-500">Per Ticket</div>
+                  </div>
+                </div>
+
+                <button className="block w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg text-center transition duration-200 shadow-md hover:shadow-lg">
+                  View Details
                 </button>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Property
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Client
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {recentTransactions.map((transaction) => (
-                      <tr key={transaction.id}>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {transaction.property}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                          {transaction.client}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                          {transaction.date}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 text-xs rounded-full ${
-                              transaction.status === "Completed"
-                                ? "bg-green-100 text-green-800"
-                                : transaction.status === "Pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {transaction.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
             </div>
-
-            {/* New Leads & Quick Actions */}
-            <div className="space-y-6">
-              {/* New Leads */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold">New Leads</h3>
-                  <button className="text-sm text-[#00A16A] hover:underline">
-                    View All
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  {newLeads.map((lead) => (
-                    <div
-                      key={lead.id}
-                      className="border border-gray-200 rounded-lg p-4"
-                    >
-                      <h4 className="font-medium">{lead.name}</h4>
-                      <p className="text-sm text-gray-500">{lead.email}</p>
-                      <p className="text-sm text-gray-500">{lead.phone}</p>
-                      <div className="mt-2">
-                        <span className="inline-block bg-[#00A16A]/10 text-[#00A16A] text-xs px-2 py-1 rounded">
-                          {lead.interest}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="flex flex-col items-center justify-center p-4 bg-[#00A16A]/10 text-[#00A16A] rounded-lg hover:bg-[#00A16A]/20 transition">
-                    <FiPlus className="text-xl mb-2" />
-                    <span className="text-sm">Add Property</span>
-                  </button>
-                  <button className="flex flex-col items-center justify-center p-4 bg-[#00A16A]/10 text-[#00A16A] rounded-lg hover:bg-[#00A16A]/20 transition">
-                    <FiFileText className="text-xl mb-2" />
-                    <span className="text-sm">Generate Report</span>
-                  </button>
-                  <button className="flex flex-col items-center justify-center p-4 bg-[#00A16A]/10 text-[#00A16A] rounded-lg hover:bg-[#00A16A]/20 transition">
-                    <FiMail className="text-xl mb-2" />
-                    <span className="text-sm">Bulk Email</span>
-                  </button>
-                  <button className="flex flex-col items-center justify-center p-4 bg-[#00A16A]/10 text-[#00A16A] rounded-lg hover:bg-[#00A16A]/20 transition">
-                    <FiCalendar className="text-xl mb-2" />
-                    <span className="text-sm">Open House</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
+          ))}
+        </div>
       </div>
     </div>
   );
-};
-
-export default RealEstateDashboard;
+}

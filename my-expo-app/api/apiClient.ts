@@ -1,6 +1,6 @@
 import { AuthResponse } from './types';
 
-const API_BASE_URL = 'http://192.168.3.72:5000/api'; // Replace with your actual API URL
+const API_BASE_URL = 'http://192.168.42.246:5000/api'; // Replace with your actual API URL
 
 const apiClient = {
   async request<T>(endpoint: string, method: string, body?: any, token?: string): Promise<T> {

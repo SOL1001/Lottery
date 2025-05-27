@@ -144,7 +144,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/Customer"
+              path="/players"
               element={
                 <ProtectedRoute isLoggedIn={isLoggedIn}>
                   <Customer />
@@ -152,7 +152,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/agent"
+              path="/draws"
               element={
                 <ProtectedRoute isLoggedIn={isLoggedIn}>
                   <Agent />

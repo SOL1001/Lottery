@@ -42,12 +42,6 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
       return;
     }
 
-    // if (password.length < 6) {
-    //   setError("Password must be at least 6 characters");
-    //   setLoading(false);
-    //   return;
-    // }
-
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -65,7 +59,6 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
         localStorage.setItem("isLoggedIn", JSON.stringify(true));
         localStorage.setItem("token", data.token);
         localStorage.setItem("userData", JSON.stringify(data.user));
-        // setIsLoggedIn(true);
         navigate("/dashboard");
       } else {
         setError(data.message || "Login failed");
@@ -80,33 +73,45 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 flex items-center justify-center">
-      <div className="bg-white flex flex-col md:flex-row p-0 rounded-xl shadow-xl w-full max-w-4xl border border-gray-200 overflow-hidden">
-        {/* Left Side - Image and Description */}
-        <div className="w-full hidden md:block md:w-1/2 bg-[#00A16A] p-8  flex-col justify-center text-white">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 to-indigo-800 p-4 flex items-center justify-center">
+      <div className="bg-white flex flex-col md:flex-row p-0 rounded-xl shadow-2xl w-full max-w-4xl border border-gray-200 overflow-hidden">
+        {/* Left Side - Lottery Theme */}
+        <div className="w-full hidden md:block md:w-1/2 bg-gradient-to-b from-purple-800 to-indigo-700 p-8 flex-col justify-center text-white">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-4">
-              Welcome to Real Estate Pro
+              Welcome to Lottery Admin Pro
             </h1>
-            <p className="text-blue-100">
-              Manage your property listings, connect with clients, and grow your
-              real estate business with our powerful platform.
+            <p className="text-purple-200">
+              Manage lottery draws, track tickets, and oversee payouts with our
+              comprehensive lottery management platform.
             </p>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 relative">
+            <div className="absolute -top-6 -left-6 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-purple-900 font-bold">7</span>
+            </div>
+            <div className="absolute -top-6 right-10 w-12 h-12 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold">23</span>
+            </div>
+            <div className="absolute bottom-4 left-10 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold">42</span>
+            </div>
+            <div className="absolute -bottom-6 -right-6 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold">15</span>
+            </div>
             <img
-              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-              alt="Modern house"
-              className="rounded-lg shadow-md w-full h-auto"
+              src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+              alt="Lottery tickets"
+              className="rounded-lg shadow-md w-full h-auto z-10 relative"
             />
           </div>
 
           <div className="mt-8">
             <div className="flex items-center mb-4">
-              <div className="bg-green-900 p-2 rounded-full mr-3">
+              <div className="bg-yellow-400 p-2 rounded-full mr-3">
                 <svg
-                  className="w-5 h-5"
+                  className="w-5 h-5 text-purple-900"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -119,12 +124,12 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                   ></path>
                 </svg>
               </div>
-              <span>Track all your listings in one place</span>
+              <span>Manage all lottery draws in one place</span>
             </div>
             <div className="flex items-center mb-4">
-              <div className="bg-green-900 p-2 rounded-full mr-3">
+              <div className="bg-yellow-400 p-2 rounded-full mr-3">
                 <svg
-                  className="w-5 h-5"
+                  className="w-5 h-5 text-purple-900"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -137,12 +142,12 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                   ></path>
                 </svg>
               </div>
-              <span>Connect with potential buyers</span>
+              <span>Track ticket sales and winners</span>
             </div>
             <div className="flex items-center">
-              <div className="bg-green-900 p-2 rounded-full mr-3">
+              <div className="bg-yellow-400 p-2 rounded-full mr-3">
                 <svg
-                  className="w-5 h-5"
+                  className="w-5 h-5 text-purple-900"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -155,15 +160,15 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                   ></path>
                 </svg>
               </div>
-              <span>Get real-time market insights</span>
+              <span>Generate comprehensive reports</span>
             </div>
           </div>
         </div>
 
         {/* Right Side - Form */}
-        <div className="w-full md:w-1/2 p-8 ">
+        <div className="w-full md:w-1/2 p-8">
           <div className="text-center mb-8">
-            <div className="mx-auto h-16 w-16 bg-[#00A16A] rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto h-16 w-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mb-4 shadow-md">
               <svg
                 className="h-10 w-10 text-white"
                 fill="none"
@@ -175,18 +180,18 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                 ></path>
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-gray-800">
-              Real Estate Pro
+              Lottery Admin Pro
             </h1>
-            <p className="text-gray-600 mt-2">Sign in to your account</p>
+            <p className="text-gray-600 mt-2">Admin Portal Login</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-3 bg-red-50 text-red-600 rounded-lg flex items-center">
+            <div className="mb-6 p-3 bg-red-50 text-red-600 rounded-lg flex items-center border border-red-200">
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -210,7 +215,7 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Email address
+                Admin Email
               </label>
               <div className="relative">
                 <input
@@ -218,8 +223,8 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-[#00A16A] rounded-lg focus:ring-2 focus:ring-[#00A16A] focus:border-[#00A16A] transition placeholder-gray-400"
-                  placeholder="your@email.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition placeholder-gray-400"
+                  placeholder="admin@lottery.com"
                   required
                   autoComplete="username"
                 />
@@ -249,7 +254,7 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-[#00A16A] rounded-lg focus:ring-2 focus:ring-[#00A16A] focus:border-[#00A16A] transition placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition placeholder-gray-400"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
@@ -300,7 +305,7 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 text-[#00A16A] focus:ring-[#00A16A] border-gray-300 rounded"
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                   />
                   <label
                     htmlFor="remember-me"
@@ -309,12 +314,12 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                     Remember me
                   </label>
                 </div>
-                <a
+                {/* <a
                   href="/forgot-password"
-                  className="text-sm text-[#00A16A] hover:text-[#00A16A]"
+                  className="text-sm text-purple-600 hover:text-purple-800"
                 >
                   Forgot password?
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -323,8 +328,8 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
               disabled={loading}
               className={`w-full py-3 px-4 rounded-lg font-medium text-white ${
                 loading
-                  ? "bg-[#00A16A] cursor-not-allowed"
-                  : "bg-[#00A16A] hover:bg-green-700"
+                  ? "bg-purple-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
               } transition duration-200 flex items-center justify-center shadow-md hover:shadow-lg`}
             >
               {loading ? (
@@ -349,13 +354,17 @@ const Login: React.FC<{ onLogin: (token: string, user: UserData) => void }> = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Signing in...
+                  Authenticating...
                 </>
               ) : (
-                "Sign In"
+                "Access Admin Portal"
               )}
             </button>
           </form>
+
+          <div className="mt-6 text-center text-sm text-gray-500">
+            <p>Secure access for authorized personnel only</p>
+          </div>
         </div>
       </div>
     </div>
