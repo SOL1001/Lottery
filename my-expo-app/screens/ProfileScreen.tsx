@@ -1,13 +1,16 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { ProfileScreenProps } from '../types/navigation';
+import * as ImagePicker from 'expo-image-picker';
 
 const ProfileScreen: React.FC<ProfileScreenProps> = () => {
   const { user, logout } = useAuth();
+  const [profileImage, setProfileImage] = useState<string | null>(
+    'https://randomuser.me/api/portraits/men/1.jpg'
+  );
 
-  // Format the date to be more readable
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
@@ -17,23 +20,47 @@ const ProfileScreen: React.FC<ProfileScreenProps> = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const pickImage = async () => {
+    // Request permissions
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required', 'Sorry, we need camera roll permissions to make this work!');
+      return;
+    }
+
+    // Launch image picker
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <ScrollView className="flex-1 bg-gray-50">
       {/* Profile Header */}
       <View className="items-center bg-white pb-6 pt-8 shadow-sm">
         <View className="relative mb-4">
           <Image
-            source={{ uri: 'https://randomuser.me/api/portraits/men/1.jpg' }}
+            source={{ uri: profileImage || 'https://randomuser.me/api/portraits/men/1.jpg' }}
             className="h-24 w-24 rounded-full border-4 border-purple-100"
           />
-          <TouchableOpacity className="absolute bottom-0 right-0 rounded-full bg-purple-600 p-2">
+          <TouchableOpacity 
+            className="absolute bottom-0 right-0 rounded-full bg-purple-600 p-2"
+            onPress={pickImage}
+          >
             <MaterialIcons name="edit" size={16} color="white" />
           </TouchableOpacity>
         </View>
         <Text className="text-2xl font-bold text-gray-900">{user?.name}</Text>
-        {/* <Text className="text-gray-500">{user?.role}</Text> */}
       </View>
 
+      {/* Rest of your existing code... */}
       {/* Account Information */}
       <View className="mx-4 my-6 rounded-xl bg-white p-6 shadow-sm">
         <Text className="mb-4 text-lg font-bold text-gray-900">Account Information</Text>

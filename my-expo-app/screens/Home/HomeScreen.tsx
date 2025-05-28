@@ -22,7 +22,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const isFocused = useIsFocused();
-  const [walletBalance, setWalletBalance] = useState(12500);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [selectedItem, setSelectedItem] = useState<Prize | null>(null);
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
@@ -30,7 +30,7 @@ const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const scrollX = useRef(new Animated.Value(0)).current;
-  const alpUrl = 'http://192.168.42.246:5000';
+  const alpUrl = 'http://192.168.3.72:5000';
 
   // Enhanced material prizes data
   type Prize = {

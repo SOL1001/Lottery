@@ -15,7 +15,7 @@ import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Wallet() {
-  const alpUrl = 'http://192.168.42.246:5000';
+  const alpUrl = 'http://192.168.3.72:5000';
   const [balance, setWalletBalance] = useState<number>(0);
   const [addFundsModalVisible, setAddFundsModalVisible] = useState(false);
   const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
